@@ -48,7 +48,7 @@ char *get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotro
 			return NULL;
 	}
 
-	b_read = read(fd, buffer, BUFFER_SIZE);//Lee el archivo y lo guarda en b_read
+	b_read = read(fd, buffer, BUFFER_SIZE - 1);//Lee el archivo y lo guarda en b_read
 	if (b_read == -1) //Comprobamos si hay un error en la lectura.
 	{
 		free(buffer); //Liberamos la memoria del buffer.
@@ -69,8 +69,3 @@ char *get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotro
 
 	return (line);
 }
-
-
-
-
-
