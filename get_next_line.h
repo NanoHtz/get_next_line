@@ -17,5 +17,8 @@
 
 
 char *get_next_line(int fd);
+char	*ft_strchr(const char *str, int x);
+char	*ft_strdup(const char *s1);
+void	*ft_memmove(void *dest, const void *str, size_t n);
 
 #endif

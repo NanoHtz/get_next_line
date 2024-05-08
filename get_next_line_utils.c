@@ -29,15 +29,6 @@ char	*ft_strchr(const char *str, int x)
 		return ((char *) &str[i]);
 	return (NULL);
 }
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
-}
 
 char	*ft_strdup(const char *s1)
 {
