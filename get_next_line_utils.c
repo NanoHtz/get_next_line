@@ -6,7 +6,7 @@
 /*   By: fgalvez- <fgalvez-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 19:08:35 by fgalvez-          #+#    #+#             */
-/*   Updated: 2024/05/09 15:12:25 by fgalvez-         ###   ########.fr       */
+/*   Updated: 2024/05/09 15:35:22 by fgalvez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,14 @@ void	*ft_memmove(void *dest, const void *str, size_t n)
 		n--;
 	}
 	return (dest);
+}
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	return (i);
 }
