@@ -6,7 +6,7 @@
 /*   By: fgalvez- <fgalvez-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 19:08:35 by fgalvez-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:46:09 by fgalvez-         ###   ########.fr       */
+/*   Updated: 2024/05/09 15:12:25 by fgalvez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*ft_strdup(const char *s1)
 	char	*dest;
 	size_t	i;
 
-	dest = (char *) ft_calloc(ft_strlen(s1) + 1, sizeof(char));
+	dest = (char *) malloc(ft_strlen(s1) + 1 * sizeof(char));
 	if (!dest)
 		return (NULL);
 	i = 0;
@@ -44,6 +44,7 @@ char	*ft_strdup(const char *s1)
 		dest[i] = s1[i];
 		i++;
 	}
+	dest[i] = '\0';
 	return (dest);
 }
 
