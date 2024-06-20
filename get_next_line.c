@@ -6,7 +6,7 @@
 /*   By: fgalvez- <fgalvez-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 19:08:30 by fgalvez-          #+#    #+#             */
-/*   Updated: 2024/05/09 16:17:32 by fgalvez-         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:22:20 by fgalvez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Archivos vacios, lineas vacias y errores de lectura
 */
 #include "get_next_line.h"
 
-#define BUFFER_SIZE 1024 //Definimos una macro que guarde el tamaño del buffer.
+#define BUFFER_SIZE 1024
 
 char	*get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotros.
 {
@@ -41,14 +41,12 @@ char	*get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotro
 	ssize_t b_read; //Esta variable guarda el número de bytes leido, es un tamaño entero con signo.
 	char *new_pos; //Guarda la posición de la siguiente línea.
 	char *line; //Guarda la línea leida.
-	
 	if (!buffer) // Comprueba si el buffer ha sido asignado, es una protección.
 	{
-		buffer = malloc (BUFFER_SIZE); //Reservamos memoria para el buffer.
+		buffer = malloc (BUFFER_SIZE + 1); //Reservamos memoria para el buffer.
 		if (!buffer) //Volvemos a realizar la comprobación.
 			return NULL;
 	}
-
 	b_read = read(fd, buffer, BUFFER_SIZE - 1);//Lee el archivo y lo guarda en b_read
 	if (b_read == -1 || b_read == 0) //Comprobamos si hay un error en la lectura o si se ha llegado al final del archivo con read = 0.
 	{
@@ -56,14 +54,12 @@ char	*get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotro
 		buffer = NULL; //Evitamos un puntero colgante, un puntero que apunta a una memoria ya liberada, si intentamos acceder el comportamiento es indefinido, puede parecer que funciona
 		return NULL;
 	}
-
 	buffer[b_read] = '\0'; //En la última posición del buffer añadimos el carcater del final para poder tratarlo como una cadena de caracteres.
 	new_pos = ft_strchr(buffer, '\n');
 	if (!new_pos)
 		new_pos = ft_strchr(buffer, '\0');
 
 	*new_pos = '\0'; //Añadimos el caracter al final de la línea para poder usar strdup
-
 	line = ft_strdup(buffer); //Guardamos la línea en la variable line.
 	if (!line)
 	{
@@ -72,7 +68,6 @@ char	*get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotro
 		return (NULL);
 	}
 	ft_memmove(buffer, new_pos + 1, ft_strlen(new_pos + 1) + 1); //Movemos el buffer para que la siguiente llamada a la función pueda leer la siguiente línea.
-
 	return (line);
 }
 
