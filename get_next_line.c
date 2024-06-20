@@ -6,7 +6,7 @@
 /*   By: fgalvez- <fgalvez-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 19:08:30 by fgalvez-          #+#    #+#             */
-/*   Updated: 2024/06/20 19:22:20 by fgalvez-         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:48:35 by fgalvez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ Archivos vacios, lineas vacias y errores de lectura
  4-Devolver la linea leida o NULL si no hay nada que leer o seguir leyendo.????
 */
 #include "get_next_line.h"
-
-#define BUFFER_SIZE 1024
 
 char	*get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotros.
 {
@@ -72,3 +70,23 @@ char	*get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotro
 }
 
 //Posible error, se puede hacer static ssize_t b_read ??
+
+int main(){
+	int		fd;
+	char	*next_line;
+	int 	count;
+
+	count = 0;
+	fd = open("example.txt", O_RDONLY);
+	while (1)
+	{
+		next_line = get_next_line(fd);
+		if (next_line == NULL)
+			break ;
+		count++;
+		printf("[%d]:%s\n",count,next_line);
+		next_line = NULL;
+	}
+	close(fd);
+	return(0);
+}
