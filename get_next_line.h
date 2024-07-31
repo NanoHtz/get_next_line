@@ -10,16 +10,41 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//Libreria
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# include <unistd.h>
+//Guarda del macro del Buffer
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10
+# endif
+
+//Librerias utilizadas
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+//Libreria para el main
+#include <stdio.h>
 
 
-char    *get_next_line(int fd);
-char	*ft_strchr(const char *str, int x);
-char	*ft_strdup(const char *s1);
-void	*ft_memmove(void *dest, const void *str, size_t n);
-size_t	ft_strlen(const char *str);
+//Nodo de mi lista enlazada.
+typedef struct list
+{
+	char			*buffer_str;
+	struct list		*next_bs;
+}	t_list;
+
+
+char	*get_next_line(int fd);
+void	make_new_list(t_list **list, int fd);
+int		look_for_newline(t_list *list);
+void	add_string_to_list(t_list	**list, char *buffer);
+t_list	*look_for_end(t_list *list);
+int 	len_for_endline(t_list *list);
+void	str_cpy(t_list *list,char *str);
+void	cancel_mem(t_list **list, t_list *clean, char *buf);
+void	prepare_the_recall(t_list	**list);
+char	*get_the_line(t_list *list);
 
 #endif

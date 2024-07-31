@@ -12,75 +12,65 @@
 
 #include "get_next_line.h"
 
-char	*ft_strchr(const char *str, int x)
+void	prepare_the_recall(t_list	**list)
 {
-	unsigned int	i;
-	char			xc;
+	t_list	*last;
+	t_list	*clean;
+	int		i;
+	int		k;
+	char	*buf;
 
-	xc = (char) x;
+	buf = malloc(BUFFER_SIZE + 1);
+	clean = malloc(sizeof(t_list));
+	if (NULL == buf || NULL == clean)
+		return ;
+
+	last = look_for_end(*list);
+
 	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str[i] == xc)
-			return ((char *) &str[i]);
-		i++;
-	}
-	if (str[i] == xc)
-		return ((char *) &str[i]);
-	return (NULL);
+	k = 0;
+	while (last->buffer_str[i] && last->buffer_str[i] != '\n')
+		++i;
+	while (last->buffer_str[i] && last->buffer_str[++i])
+		buf[k++] = last->buffer_str[i];
+
+	buf[k] = '\0';
+	clean->buffer_str = buf;
+	clean->next_bs = NULL;
+	cancel_mem(list, clean, buf);
 }
 
-char	*ft_strdup(const char *s1)
+char	*get_the_line(t_list *list)
 {
-	char	*dest;
-	size_t	i;
+	int		stringlen;
+	char	*next_string;
 
-	dest = (char *) malloc(ft_strlen(s1) + 1 * sizeof(char));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		dest[i] = s1[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
+	stringlen = len_for_endline(list);
+
+	next_string = malloc(sizeof(char) * (stringlen + 1));
+	if(next_string == NULL)
+		return(NULL);
+
+	str_cpy(list,next_string);
+
+	return(next_string);
 }
 
-void	*ft_memmove(void *dest, const void *str, size_t n)
+void	add_string_to_list(t_list	**list, char *buffer)
 {
-	unsigned char	*dest2;
-	unsigned char	*src2;
-	size_t			i;
+	t_list	*new_element;
+	t_list	*last_element;
 
-	dest2 = (unsigned char *)dest;
-	src2 = (unsigned char *)str;
-	i = 0;
-	if (src2 == 0 && dest2 == 0)
-		return (0);
-	if (src2 > dest2)
-	{
-		while (i < n)
-		{
-			dest2[i] = src2[i];
-			i++;
-		}
-	}
-	while (i < n)
-	{
-		dest2[n - 1] = src2[n - 1];
-		n--;
-	}
-	return (dest);
-}
+	last_element = look_for_end(*list);
+	new_element = malloc(sizeof(t_list));
 
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
+	if (new_element == NULL)
+		return ;
+	if (last_element == NULL)
+		*list = new_element;
+	else
+		last_element->next_bs = new_element;
 
-	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
+	new_element -> buffer_str = buffer;
+	new_element -> next_bs = NULL;
 }

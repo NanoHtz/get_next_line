@@ -29,51 +29,171 @@ Archivos vacios, lineas vacias y errores de lectura
  3-Leer el archivo hasta \n o 'EOF'.
  4-Devolver la linea leida o NULL si no hay nada que leer o seguir leyendo.????
 */
+
 #include "get_next_line.h"
 
-#define BUFFER_SIZE 1024 //Definimos una macro que guarde el tamaño del buffer.
-
-char	*get_next_line(int fd) //Archivo ya abierto, no tenemos que abrirlo nosotros.
+int	look_for_newline(t_list *list)
 {
-	static char *buffer; /*Una variable estática, mantiene su valor entre las llamadas
-	y que guarda el contenido del archivo,
-	esto permite a la función recordar donde estaba.*/
-	ssize_t b_read; //Esta variable guarda el número de bytes leido, es un tamaño entero con signo.
-	char *new_pos; //Guarda la posición de la siguiente línea.
-	char *line; //Guarda la línea leida.
-	
-	if (!buffer) // Comprueba si el buffer ha sido asignado, es una protección.
+	int	i;
+
+	if (NULL == list)
+		return (0);
+	while (list)
 	{
-		buffer = malloc (BUFFER_SIZE); //Reservamos memoria para el buffer.
-		if (!buffer) //Volvemos a realizar la comprobación.
-			return NULL;
+		i = 0;
+		while (list->buffer_str[i] && i < BUFFER_SIZE)
+		{
+			if (list->buffer_str[i] == '\n')
+				return (1);
+			++i;
+		}
+		list = list->next_bs;
 	}
-
-	b_read = read(fd, buffer, BUFFER_SIZE - 1);//Lee el archivo y lo guarda en b_read
-	if (b_read == -1 || b_read == 0) //Comprobamos si hay un error en la lectura o si se ha llegado al final del archivo con read = 0.
-	{
-		free(buffer); //Liberamos la memoria del buffer.
-		buffer = NULL; //Evitamos un puntero colgante, un puntero que apunta a una memoria ya liberada, si intentamos acceder el comportamiento es indefinido, puede parecer que funciona
-		return NULL;
-	}
-
-	buffer[b_read] = '\0'; //En la última posición del buffer añadimos el carcater del final para poder tratarlo como una cadena de caracteres.
-	new_pos = ft_strchr(buffer, '\n');
-	if (!new_pos)
-		new_pos = ft_strchr(buffer, '\0');
-
-	*new_pos = '\0'; //Añadimos el caracter al final de la línea para poder usar strdup
-
-	line = ft_strdup(buffer); //Guardamos la línea en la variable line.
-	if (!line)
-	{
-		free(buffer);
-		buffer = NULL;
-		return (NULL);
-	}
-	ft_memmove(buffer, new_pos + 1, ft_strlen(new_pos + 1) + 1); //Movemos el buffer para que la siguiente llamada a la función pueda leer la siguiente línea.
-
-	return (line);
+	return (0);
 }
 
+void	cancel_mem(t_list **list, t_list *clean, char *buf)
+{
+	t_list	*tmp;
+
+	if (NULL == *list)
+		return ;
+
+	while (*list)
+	{
+		tmp = (*list)->next_bs;
+		free((*list)->buffer_str);
+		free(*list);
+		*list = tmp;
+	}
+	*list = NULL;
+	if (clean->buffer_str[0])
+		*list = clean;
+	else
+	{
+		free(buf);
+		free(clean);
+	}
+}
+
+t_list	*look_for_end(t_list *list)
+{
+	if (NULL == list)
+		return (NULL);
+	while (list->next_bs)
+		list = list->next_bs;
+	return (list);
+}
+
+void	str_cpy(t_list *list,char *str)
+{
+	int	i;
+	int	j;
+
+	j = 0;
+	while (list)
+	{
+		i = 0;
+		while(list -> buffer_str[i])
+		{
+			if(list -> buffer_str[i] == '\n')
+			{
+				str[j++] = '\n';
+				str[j] = '\0';
+				return ;
+			}
+			str[j++] = list -> buffer_str[i++];
+		}
+		list = list -> next_bs;
+	}
+	str[j] = '\0';
+}
+
+int len_for_endline(t_list *list)
+{
+	int	i;
+	int	l;
+
+	l = 0;
+	while (list)
+	{
+		i = 0;
+		while (list -> buffer_str[i])
+		{
+			if(list -> buffer_str[i] == '\n')
+			{
+				++l;
+				return(l);
+			}
+			++i;
+			++l;
+		}
+		list = list -> next_bs;
+	}
+	return (l);
+}
+
+
+void	make_new_list(t_list **list, int fd)
+{
+	int		c_read;
+	char	*buffer;
+
+	while (!look_for_newline(*list))
+	{
+		buffer = malloc(BUFFER_SIZE + 1);
+		if (buffer == NULL)
+			return ;
+
+		c_read = read(fd, buffer, BUFFER_SIZE);
+		if(!c_read)
+		{
+			free(buffer);
+			return ;
+		}
+		buffer[c_read] = '\0';
+		add_string_to_list(list, buffer);
+	}
+}
+
+char	*get_next_line(int fd)
+{
+	static t_list	*list = NULL;
+	char			*next_line;
+
+	if( fd < 0 || BUFFER_SIZE <= 0 || read(fd, &next_line, 0) < 0)
+		return (NULL);
+
+	make_new_list(&list, fd);
+
+	next_line = get_the_line(list);
+
+	prepare_the_recall(&list);
+
+	return(next_line);
+}
+
+int main()
+{
+	int fd;
+	char *line;
+	int lines;
+
+	lines = 1;
+	fd = open("lorem.txt", O_RDONLY);
+	if (fd < 0)
+	{
+		perror("error al abrir");
+		return 1;
+	}
+
+
+	while ( (line = get_next_line(fd)) != NULL)
+	{
+		printf("%d -> %s\n", lines++, line);
+		free(line);
+	}
+	close(fd);
+	return 0;
+}
 //Posible error, se puede hacer static ssize_t b_read ??
