@@ -6,7 +6,7 @@
 /*   By: fgalvez- <fgalvez-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 19:08:30 by fgalvez-          #+#    #+#             */
-/*   Updated: 2024/05/09 16:17:32 by fgalvez-         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:48:35 by fgalvez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,4 +196,3 @@ int main()
 	close(fd);
 	return 0;
 }
-//Posible error, se puede hacer static ssize_t b_read ??
