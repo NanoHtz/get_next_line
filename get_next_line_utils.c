@@ -26,11 +26,19 @@ void	prepare_the_recall(t_list	**list)
 		return ;
 
 	last = look_for_end(*list);
+	if (last == NULL)
+	{
+		free(buf);
+		free(clean);
+		return;
+	}
 
 	i = 0;
 	k = 0;
 	while (last->buffer_str[i] && last->buffer_str[i] != '\n')
 		++i;
+	if (last->buffer_str[i] == EOF)
+    	return;
 	while (last->buffer_str[i] && last->buffer_str[++i])
 		buf[k++] = last->buffer_str[i];
 

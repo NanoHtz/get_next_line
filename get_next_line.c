@@ -165,6 +165,8 @@ char	*get_next_line(int fd)
 		return (NULL);
 
 	make_new_list(&list, fd);
+	if (list == NULL)
+		return (NULL);
 
 	next_line = get_the_line(list);
 
