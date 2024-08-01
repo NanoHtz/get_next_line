@@ -174,27 +174,3 @@ char	*get_next_line(int fd)
 
 	return(next_line);
 }
-
-int main()
-{
-	int fd;
-	char *line;
-	int lines;
-
-	lines = 1;
-	fd = open("lorem.txt", O_RDONLY);
-	if (fd < 0)
-	{
-		perror("error al abrir");
-		return 1;
-	}
-
-
-	while ( (line = get_next_line(fd)) != NULL)
-	{
-		printf("%d -> %s\n", lines++, line);
-		free(line);
-	}
-	close(fd);
-	return 0;
-}

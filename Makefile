@@ -15,6 +15,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 NAME = get_next_line.a
+EXEC = get_next_line_exec
 
 INCLUDE = get_next_line.h
 
@@ -22,12 +23,19 @@ SRC = get_next_line.c \
 	get_next_line_utils.c
 
 OBJ = $(SRC:.c=.o)
+
 .PHONY: all clean fclean re
 
-all: $(NAME)
+all: $(NAME) $(EXEC)
 
 $(NAME): $(OBJ)
 		@ar -crs $(NAME) $(OBJ)
+
+$(EXEC): $(OBJ) main.o
+	$(CC) $(CFLAGS) -o $(EXEC) $(OBJ) main.o
+
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
 
 BUFFER_SIZE = 1024
 
