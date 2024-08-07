@@ -20,7 +20,7 @@ EXEC = get_next_line_exec
 INCLUDE = get_next_line.h
 
 SRC = get_next_line.c \
-	get_next_line_utils.c
+	get_next_line_utils.c \
 
 OBJ = $(SRC:.c=.o)
 
